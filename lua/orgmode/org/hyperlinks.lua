@@ -147,24 +147,15 @@ end
 
 function Hyperlinks.get_file_real_path(url_path)
   local path = url_path
+  -- Remove the "file:" at the beginning
   path = path:gsub('^file:', '')
-  local real_path = ""
-  if path:match('^/') then
-    real_path = path
-  end
-  path = path:gsub('^./', '')
-
-  -- Check if it's windows and change the slashes
-  if (package.config:sub(1,1) == "\\") then
-    local shellslash_exists = vim.fn.exists("+shellslash") ~= 0
-    if (not shellslash_exists or not vim.o.shellslash) then
-      real_path = real_path:gsub("/", "\\")
-    end
+  -- Check if the path is relative and expand it
+  local full_path = path
+  if path:match('^%./') or path:match('^%.\\') then
+    full_path = vim.fn.fnamemodify(utils.current_file_path(), ':p:h') .. '/' .. path
   end
 
-  real_path = vim.fn.fnamemodify(utils.current_file_path(), ':p:h') .. '/' .. path
-
-  return real_path
+  return utils.normalize_file_path(full_path)
 end
 
 return Hyperlinks
