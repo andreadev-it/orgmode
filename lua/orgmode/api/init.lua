@@ -1,5 +1,6 @@
 local Files = require('orgmode.parser.files')
 local OrgFile = require('orgmode.api.file')
+local utils = require('orgmode.utils')
 
 local OrgApi = {}
 
@@ -43,7 +44,7 @@ function OrgApi.current()
   if vim.bo.filetype ~= 'org' then
     error('Not an org buffer.')
   end
-  local name = vim.api.nvim_buf_get_name(0)
+  local name = utils.current_file_path()
   return OrgApi.load(name)
 end
 

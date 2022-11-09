@@ -469,7 +469,11 @@ function utils.get_nearest_block_node(file, cursor, accept_at_cursor)
 end
 
 function utils.current_file_path()
-  return vim.api.nvim_buf_get_name(0)
+  return utils.normalize_file_path(vim.api.nvim_buf_get_name(0))
+end
+
+function utils.normalize_file_path(file)
+  return vim.fn.resolve(vim.fn.expand(file, ':p'))
 end
 
 ---@param winnr? number

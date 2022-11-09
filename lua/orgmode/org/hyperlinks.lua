@@ -147,12 +147,15 @@ end
 
 function Hyperlinks.get_file_real_path(url_path)
   local path = url_path
+  -- Remove the "file:" at the beginning
   path = path:gsub('^file:', '')
-  if path:match('^/') then
-    return path
+  -- Check if the path is relative and expand it
+  local full_path = path
+  if path:match('^%./') or path:match('^%.\\') then
+    full_path = vim.fn.fnamemodify(utils.current_file_path(), ':p:h') .. '/' .. path
   end
-  path = path:gsub('^./', '')
-  return vim.fn.fnamemodify(utils.current_file_path(), ':p:h') .. '/' .. path
+
+  return utils.normalize_file_path(full_path)
 end
 
 return Hyperlinks
